@@ -17,6 +17,9 @@
 (add-hook 'prog-mode-hook 'linum-mode)
 (setq linum-format "%4d\u2502") ;; nice formatting for linum
 
+(winner-mode 1)    ;; winner to quickly restore window config
+(electric-pair-mode 1) ;; ensure parenthesis and braces are paired
+
 (setq ring-bell-function 'ignore) ;; no annoying bells
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized)) ;; fullscreen on startup
@@ -26,6 +29,14 @@
 
 #+END_SRC
 
+* backup and autosave
+#+BEGIN_SRC emacs-lisp
+;; store all backup and autosave files in the tmp dir
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+#+END_SRC
 * helm
 #+BEGIN_SRC emacs-lisp
 (use-package helm-config)
@@ -906,57 +917,6 @@ Eshell prompt
 )
 
 #+END_SRC
-* personal keymap
-#+BEGIN_SRC emacs-lisp
-;; unset C- and M- digit keys
-;(dotimes (n 10)
-;  (global-unset-key (kbd (format "C-%d" n)))
-;  (global-unset-key (kbd (format "M-%d" n)))
-;  )
-
-
-(defun org-agenda-show-agenda-and-todo (&optional arg)
-  (interactive "P")
-  (org-agenda arg "c")
-  (org-agenda-fortnight-view))
-
-
-;; set up my own map
-(define-prefix-command 'z-map)
-(global-set-key (kbd "C-z") 'z-map) ;; was C-1
-(define-key z-map (kbd "c") 'multiple-cursors-hydra/body)
-(define-key z-map (kbd "m") 'mu4e)
-(define-key z-map (kbd "1") 'org-global-cycle)
-(define-key z-map (kbd "a") 'org-agenda-show-agenda-and-todo)
-(define-key z-map (kbd "g") 'counsel-ag)
-
-(define-key z-map (kbd "s") 'flyspell-correct-word-before-point)
-(define-key z-map (kbd "i") (lambda () (interactive) (find-file "~/Dropbox/orgfiles/i.org")))
-(define-key z-map (kbd "f") 'origami-toggle-node)
-(define-key z-map (kbd "w") 'z/swap-windows)
-
-  ;;--------------------------------------------------------------------------
-
-
-  (global-set-key (kbd "\e\ei")
-                  (lambda () (interactive) (find-file "~/Dropbox/orgfiles/i.org")))
-
-  (global-set-key (kbd "\e\el")
-                  (lambda () (interactive) (find-file "~/Dropbox/orgfiles/links.org")))
-
-  (global-set-key (kbd "\e\ec")
-                  (lambda () (interactive) (find-file "~/.emacs.d/myinit.org")))
-
-(global-set-key (kbd "<end>") 'move-end-of-line)
-
-(global-set-key [mouse-3] 'flyspell-correct-word-before-point)
-
-#+END_SRC
-
-#+RESULTS:
-: origami-toggle-node
-
-#  LocalWords:  DIRED Javascript Screencasts Autocomplete
 * shell-pop 
 #+BEGIN_SRC emacs-lisp
 (use-package shell-pop
