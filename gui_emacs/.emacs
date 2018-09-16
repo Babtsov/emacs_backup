@@ -19,6 +19,7 @@
 (add-to-list 'default-frame-alist '(fullscreen . maximized)) ;; fullscreen on startup
 
 (winner-mode 1)    ;; winner to quickly restore window config
+(global-undo-tree-mode)
 (defalias 'yes-or-no-p 'y-or-n-p) ;; enough to write just y/n
 (defalias 'list-buffers 'ibuffer) ;; make ibuffer default
 (windmove-default-keybindings) ;; use shift + arrows to move between windows
@@ -39,9 +40,8 @@
  '(org-export-backends (quote (ascii html icalendar latex md odt)))
  '(package-selected-packages
    (quote
-    (htmlize company helm-xref swiper-helm counsel swiper ivy helm-ag helm auto-complete)))
-
-'(show-trailing-whitespace t))
+    (undo-tree htmlize company helm-xref swiper-helm counsel swiper ivy helm-ag helm auto-complete)))
+ '(show-trailing-whitespace t))
 ;; highlight annoying trailing whitespace
 ;; https://stackoverflow.com/questions/11700934/emacs-set-and-toggle-show-trailing-whitespace
 
