@@ -51,6 +51,12 @@
 (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
 (define-key helm-map (kbd "C-z")  'helm-select-action)
 
+;; Make Helm window at the bottom WITHOUT using any extra package
+(setq helm-always-two-windows nil)
+(setq helm-display-buffer-default-height 13)
+(setq helm-default-display-buffer-functions '(display-buffer-in-side-window))
+
+
 #+END_SRC
 * try
 #+BEGIN_SRC emacs-lisp
@@ -128,23 +134,6 @@
   					  ("n" "Note" entry (file+headline "~/Dropbox/orgfiles/i.org" "Note space")
           				   "* %?\n%u" :prepend t)
   					  ))
-            ;; (setq org-capture-templates
-        ;; 		    '(("a" "Appointment" entry (file  "~/Dropbox/orgfiles/gcal.org" )
-        ;; 			     "* TODO %?\n:PROPERTIES:\nDEADLINE: %^T \n\n:END:\n %i\n")
-        ;; 			    ("l" "Link" entry (file+headline "~/Dropbox/orgfiles/links.org" "Links")
-        ;; 			     "* %? %^L %^g \n%T" :prepend t)
-        ;; 			    ("b" "Blog idea" entry (file+headline "~/Dropbox/orgfiles/i.org" "Blog Topics:")
-        ;; 			     "* %?\n%T" :prepend t)
-        ;; 			    ("t" "To Do Item" entry (file+headline "~/Dropbox/orgfiles/i.org" "To Do")
-        ;; 			     "* TODO %?\n%u" :prepend t)
-        ;; 			    ("n" "Note" entry (file+headline "~/Dropbox/orgfiles/i.org" "Note space")
-        ;; 			     "* %?\n%u" :prepend t)
-
-        ;; 			    ("j" "Journal" entry (file+datetree "~/Dropbox/journal.org")
-        ;; 			     "* %?\nEntered on %U\n  %i\n  %a")
-            ;;                                ("s" "Screencast" entry (file "~/Dropbox/orgfiles/screencastnotes.org")
-            ;;                                "* %?\n%i\n")))
-
 
         (defadvice org-capture-finalize 
             (after delete-capture-frame activate)  
@@ -318,40 +307,40 @@
 * Misc packages
   #+BEGIN_SRC emacs-lisp
 
-  ; Highlights the current cursor line
-  (global-hl-line-mode t)
+      ; Highlights the current cursor line
+      (global-hl-line-mode t)
   
-  ; flashes the cursor's line when you scroll
-  (use-package beacon
-  :ensure t
-  :config
-  (beacon-mode 1)
-  ; (setq beacon-color "#666600")
-  )
+      ; flashes the cursor's line when you scroll
+      (use-package beacon
+      :ensure t
+      :config
+      (beacon-mode 1)
+      ; (setq beacon-color "#666600")
+      )
   
-  ; deletes all the whitespace when you hit backspace or delete
-  (use-package hungry-delete
-  :ensure t
-  :config
-  (global-hungry-delete-mode))
+      ; deletes all the whitespace when you hit backspace or delete
+      (use-package hungry-delete
+      :ensure t
+      :config
+      (global-hungry-delete-mode))
   
 
-  (use-package multiple-cursors
-  :ensure t)
+      (use-package multiple-cursors
+      :ensure t)
+      
+      ; expand the marked region in semantic increments (negative prefix to reduce region)
+      ;; (use-package expand-region
+      ;; :ensure t
+      ;; :config 
+      ;; (global-set-key (kbd "C-=") 'er/expand-region))
 
-  ; expand the marked region in semantic increments (negative prefix to reduce region)
-  (use-package expand-region
-  :ensure t
-  :config 
-  (global-set-key (kbd "C-=") 'er/expand-region))
-
-(setq save-interprogram-paste-before-kill t)
+    (setq save-interprogram-paste-before-kill t)
 
 
-(global-auto-revert-mode 1) ;; you might not want this
-(setq auto-revert-verbose nil) ;; or this
-(global-set-key (kbd "<f5>") 'revert-buffer)
-(global-set-key (kbd "<f6>") 'revert-buffer)
+    (global-auto-revert-mode 1) ;; you might not want this
+    (setq auto-revert-verbose nil) ;; or this
+    (global-set-key (kbd "<f5>") 'revert-buffer)
+    (global-set-key (kbd "<f6>") 'revert-buffer)
 
 
   
@@ -400,37 +389,6 @@
   #+RESULTS:
   : narrow-or-widen-dwim
 
-* Web Mode
-#+BEGIN_SRC emacs-lisp
-    (use-package web-mode
-      :ensure t
-      :config
-	   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-	   (add-to-list 'auto-mode-alist '("\\.vue?\\'" . web-mode))
-	   (setq web-mode-engines-alist
-		 '(("django"    . "\\.html\\'")))
-	   (setq web-mode-ac-sources-alist
-	   '(("css" . (ac-source-css-property))
-	   ("vue" . (ac-source-words-in-buffer ac-source-abbrev))
-           ("html" . (ac-source-words-in-buffer ac-source-abbrev))))
-  (setq web-mode-enable-auto-closing t))
-  (setq web-mode-enable-auto-quoting t) ; this fixes the quote problem I mentioned
-
-
-#+END_SRC
-
-#+RESULTS:
-: t
-* Emmet mode
-#+BEGIN_SRC emacs-lisp
-(use-package emmet-mode
-:ensure t
-:config
-(add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
-(add-hook 'web-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
-(add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
-)
-#+END_SRC
 * Javascript
 #+BEGIN_SRC emacs-lisp
 (use-package js2-mode
@@ -496,20 +454,6 @@
   (setq web-mode-code-indent-offset 2))
 (add-hook 'web-mode-hook  'my-web-mode-hook)
 #+END_SRC 
-
-* DIRED
-#+BEGIN_SRC emacs-lisp
-; wiki melpa problem
-;(use-package dired+
-;  :ensure t
-;  :config (require 'dired+)
-;  )
-
-
-#+END_SRC
-
-#+RESULTS:
-: t
 
 * Hydra
 #+BEGIN_SRC emacs-lisp
@@ -932,60 +876,6 @@ Eshell prompt
   (setq ibuffer-expert t)
 
 #+END_SRC
-* Prodigy
-#+BEGIN_SRC emacs-lisp
-    (use-package prodigy
-    :ensure t
-    :config
-    (load-if-exists "~/Dropbox/shared/prodigy-services.el")
-)
-#+END_SRC
-
-#+RESULTS:
-: t
-
-* Treemacs
-#+BEGIN_SRC emacs-lisp
-  (use-package treemacs
-    :ensure t
-    :defer t
-    :config
-    (progn
-
-      (setq treemacs-follow-after-init          t
-            treemacs-width                      35
-            treemacs-indentation                2
-            treemacs-git-integration            t
-            treemacs-collapse-dirs              3
-            treemacs-silent-refresh             nil
-            treemacs-change-root-without-asking nil
-            treemacs-sorting                    'alphabetic-desc
-            treemacs-show-hidden-files          t
-            treemacs-never-persist              nil
-            treemacs-is-never-other-window      nil
-            treemacs-goto-tag-strategy          'refetch-index)
-
-      (treemacs-follow-mode t)
-      (treemacs-filewatch-mode t))
-    :bind
-    (:map global-map
-          ([f8]        . treemacs-toggle)
-          ([f9]        . treemacs-projectile-toggle)
-          ("<C-M-tab>" . treemacs-toggle)
-          ("M-0"       . treemacs-select-window)
-          ("C-c 1"     . treemacs-delete-other-windows)
-        ))
-  (use-package treemacs-projectile
-    :defer t
-    :ensure t
-    :config
-    (setq treemacs-header-function #'treemacs-projectile-create-header)
-)
-
-#+END_SRC
-
-#+RESULTS:
-
 * misc
 #+BEGIN_SRC emacs-lisp
 (defun z/nikola-deploy () ""
