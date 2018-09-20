@@ -5,17 +5,20 @@
 
 #+END_SRC
 * interface tweaks
-
+** linum mode
+#+BEGIN_SRC emacs-lisp
+;; enable linum only for conventional modes
+(add-hook 'text-mode-hook 'linum-mode)
+(add-hook 'prog-mode-hook 'linum-mode)
+(add-hook 'coq-mode-hook 'linum-mode)
+(setq linum-format "%4d\u2502") ;; nice formatting for linum
+#+END_SRC
+** emacs tweaks
 #+BEGIN_SRC emacs-lisp
 (setq inhibit-startup-message t)
 (tool-bar-mode -1)
 (fset 'yes-or-no-p 'y-or-n-p) ;; enough to write just y/n
 (set-face-attribute 'default nil :height 140) ;; increase text size on emacs GUI
-
-;; enable linum only for conventional modes
-(add-hook 'text-mode-hook 'linum-mode)
-(add-hook 'prog-mode-hook 'linum-mode)
-(setq linum-format "%4d\u2502") ;; nice formatting for linum
 
 (winner-mode 1)    ;; winner to quickly restore window config
 (electric-pair-mode 1) ;; ensure parenthesis and braces are paired
