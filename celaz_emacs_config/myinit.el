@@ -2,8 +2,57 @@
 
 (setq inhibit-startup-message t)
 (tool-bar-mode -1)
-(fset 'yes-or-no-p 'y-or-n-p)
-(global-set-key (kbd "<f5>") 'revert-buffer)
+(fset 'yes-or-no-p 'y-or-n-p) ;; enough to write just y/n
+(set-face-attribute 'default nil :height 140) ;; increase text size on emacs GUI
+
+;; enable linum only for conventional modes
+(add-hook 'text-mode-hook 'linum-mode)
+(add-hook 'prog-mode-hook 'linum-mode)
+(setq linum-format "%4d\u2502") ;; nice formatting for linum
+
+(winner-mode 1)    ;; winner to quickly restore window config
+(electric-pair-mode 1) ;; ensure parenthesis and braces are paired
+
+(setq ring-bell-function 'ignore) ;; no annoying bells
+
+(add-to-list 'default-frame-alist '(fullscreen . maximized)) ;; fullscreen on startup
+(setq transient-mark-mode nil) ;; disable transient-mark-mode
+
+(setq tags-revert-without-query 1)
+
+;; store all backup and autosave files in the tmp dir
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+
+(use-package helm-config)
+
+(use-package helm :ensure t)
+(use-package swiper-helm :ensure t)
+
+(use-package helm-mode
+  :config
+  (helm-mode 1))
+
+(define-key global-map [remap find-file] 'helm-find-files)
+(define-key global-map [remap occur] 'helm-occur)
+(define-key global-map [remap list-buffers] 'helm-buffers-list)
+(define-key global-map [remap dabbrev-expand] 'helm-dabbrev)
+(define-key global-map [remap execute-extended-command] 'helm-M-x)
+
+(global-set-key (kbd "C-s")  'swiper-helm)
+(global-set-key (kbd "C-x m") 'helm-imenu-in-all-buffers) ;; bind to imenu instead of mail
+
+
+(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
+(define-key helm-map (kbd "C-z")  'helm-select-action)
+
+;; Make Helm window at the bottom WITHOUT using any extra package
+(setq helm-always-two-windows nil)
+(setq helm-display-buffer-default-height 13)
+(setq helm-default-display-buffer-functions '(display-buffer-in-side-window))
 
 (use-package try
 	:ensure t)
@@ -68,23 +117,6 @@
   					  ("n" "Note" entry (file+headline "~/Dropbox/orgfiles/i.org" "Note space")
           				   "* %?\n%u" :prepend t)
   					  ))
-            ;; (setq org-capture-templates
-        ;; 		    '(("a" "Appointment" entry (file  "~/Dropbox/orgfiles/gcal.org" )
-        ;; 			     "* TODO %?\n:PROPERTIES:\nDEADLINE: %^T \n\n:END:\n %i\n")
-        ;; 			    ("l" "Link" entry (file+headline "~/Dropbox/orgfiles/links.org" "Links")
-        ;; 			     "* %? %^L %^g \n%T" :prepend t)
-        ;; 			    ("b" "Blog idea" entry (file+headline "~/Dropbox/orgfiles/i.org" "Blog Topics:")
-        ;; 			     "* %?\n%T" :prepend t)
-        ;; 			    ("t" "To Do Item" entry (file+headline "~/Dropbox/orgfiles/i.org" "To Do")
-        ;; 			     "* TODO %?\n%u" :prepend t)
-        ;; 			    ("n" "Note" entry (file+headline "~/Dropbox/orgfiles/i.org" "Note space")
-        ;; 			     "* %?\n%u" :prepend t)
-
-        ;; 			    ("j" "Journal" entry (file+datetree "~/Dropbox/journal.org")
-        ;; 			     "* %?\nEntered on %U\n  %i\n  %a")
-            ;;                                ("s" "Screencast" entry (file "~/Dropbox/orgfiles/screencastnotes.org")
-            ;;                                "* %?\n%i\n")))
-
 
         (defadvice org-capture-finalize 
             (after delete-capture-frame activate)  
@@ -127,41 +159,8 @@
      ((t (:inherit ace-jump-face-foreground :height 3.0))))) 
   ))
 
-(use-package counsel
-:ensure t
-  :bind
-  (("M-y" . counsel-yank-pop)
-   :map ivy-minibuffer-map
-   ("M-y" . ivy-next-line)))
-
-
-
-
-  (use-package ivy
-  :ensure t
-  :diminish (ivy-mode)
-  :bind (("C-x b" . ivy-switch-buffer))
-  :config
-  (ivy-mode 1)
-  (setq ivy-use-virtual-buffers t)
-  (setq ivy-count-format "%d/%d ")
-  (setq ivy-display-style 'fancy))
-
-
-  (use-package swiper
-  :ensure t
-  :bind (("C-s" . swiper)
-	 ("C-r" . swiper)
-	 ("C-c C-r" . ivy-resume)
-	 ("M-x" . counsel-M-x)
-	 ("C-x C-f" . counsel-find-file))
-  :config
-  (progn
-    (ivy-mode 1)
-    (setq ivy-use-virtual-buffers t)
-    (setq ivy-display-style 'fancy)
-    (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-    ))
+(setq proof-splash-enable nil)
+(custom-set-variables '(coq-prog-name "/usr/local/bin/coqtop") '(proof-three-window-enable t))
 
 (use-package company
 :ensure t
@@ -247,7 +246,7 @@
 
 ; Highlights the current cursor line
   (global-hl-line-mode t)
-  
+
   ; flashes the cursor's line when you scroll
   (use-package beacon
   :ensure t
@@ -255,22 +254,22 @@
   (beacon-mode 1)
   ; (setq beacon-color "#666600")
   )
-  
+
   ; deletes all the whitespace when you hit backspace or delete
   (use-package hungry-delete
   :ensure t
   :config
   (global-hungry-delete-mode))
-  
+
 
   (use-package multiple-cursors
   :ensure t)
 
   ; expand the marked region in semantic increments (negative prefix to reduce region)
-  (use-package expand-region
-  :ensure t
-  :config 
-  (global-set-key (kbd "C-=") 'er/expand-region))
+  ;; (use-package expand-region
+  ;; :ensure t
+  ;; :config 
+  ;; (global-set-key (kbd "C-=") 'er/expand-region))
 
 (setq save-interprogram-paste-before-kill t)
 
@@ -313,28 +312,6 @@ narrowed."
 ;; This line actually replaces Emacs' entire narrowing keymap, that's
 ;; how much I like this command. Only copy it if that's what you want.
 (define-key ctl-x-map "n" #'narrow-or-widen-dwim)
-
-(use-package web-mode
-    :ensure t
-    :config
-	 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-	 (add-to-list 'auto-mode-alist '("\\.vue?\\'" . web-mode))
-	 (setq web-mode-engines-alist
-	       '(("django"    . "\\.html\\'")))
-	 (setq web-mode-ac-sources-alist
-	 '(("css" . (ac-source-css-property))
-	 ("vue" . (ac-source-words-in-buffer ac-source-abbrev))
-         ("html" . (ac-source-words-in-buffer ac-source-abbrev))))
-(setq web-mode-enable-auto-closing t))
-(setq web-mode-enable-auto-quoting t) ; this fixes the quote problem I mentioned
-
-(use-package emmet-mode
-:ensure t
-:config
-(add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
-(add-hook 'web-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
-(add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
-)
 
 (use-package js2-mode
 :ensure t
@@ -398,12 +375,6 @@ narrowed."
   (setq web-mode-css-indent-offset 2)
   (setq web-mode-code-indent-offset 2))
 (add-hook 'web-mode-hook  'my-web-mode-hook)
-
-; wiki melpa problem
-;(use-package dired+
-;  :ensure t
-;  :config (require 'dired+)
-;  )
 
 (use-package hydra 
     :ensure hydra
@@ -474,60 +445,6 @@ narrowed."
   ("<mouse-1>" mc/add-cursor-on-click)
   ("<down-mouse-1>" ignore)
   ("<drag-mouse-1>" ignore))
-
-(use-package magit
-  :ensure t
-  :init
-  (progn
-  (bind-key "C-x g" 'magit-status)
-  ))
-
-  (use-package git-gutter
-  :ensure t
-  :init
-  (global-git-gutter-mode +1))
-
-  (global-set-key (kbd "M-g M-g") 'hydra-git-gutter/body)
-
-
-  (use-package git-timemachine
-  :ensure t
-  )
-(defhydra hydra-git-gutter (:body-pre (git-gutter-mode 1)
-                            :hint nil)
-  "
-Git gutter:
-  _j_: next hunk        _s_tage hunk     _q_uit
-  _k_: previous hunk    _r_evert hunk    _Q_uit and deactivate git-gutter
-  ^ ^                   _p_opup hunk
-  _h_: first hunk
-  _l_: last hunk        set start _R_evision
-"
-  ("j" git-gutter:next-hunk)
-  ("k" git-gutter:previous-hunk)
-  ("h" (progn (goto-char (point-min))
-              (git-gutter:next-hunk 1)))
-  ("l" (progn (goto-char (point-min))
-              (git-gutter:previous-hunk 1)))
-  ("s" git-gutter:stage-hunk)
-  ("r" git-gutter:revert-hunk)
-  ("p" git-gutter:popup-hunk)
-  ("R" git-gutter:set-start-revision)
-  ("q" nil :color blue)
-  ("Q" (progn (git-gutter-mode -1)
-              ;; git-gutter-fringe doesn't seem to
-              ;; clear the markup right away
-              (sit-for 0.1)
-              (git-gutter:clear))
-       :color blue))
-
-(defun load-if-exists (f)
-  "load the elisp file only if it exists and is readable"
-  (if (file-readable-p f)
-      (load-file f)))
-
-(load-if-exists "~/Dropbox/shared/mu4econfig.el")
-(load-if-exists "~/Dropbox/shared/not-for-github.el")
 
 (add-hook 'org-mode-hook 'turn-on-flyspell)
 (add-hook 'org-mode-hook 'turn-on-auto-fill)
@@ -647,9 +564,6 @@ directory to make multiple eshell windows easier."
               (ggtags-mode 1))))
 )
 
-(use-package cider
-:ensure t)
-
 (use-package dumb-jump
   :bind (("M-g o" . dumb-jump-go-other-window)
          ("M-g j" . dumb-jump-go)
@@ -698,48 +612,6 @@ directory to make multiple eshell windows easier."
 ;; Don't ask for confirmation to delete marked buffers
 (setq ibuffer-expert t)
 
-(use-package prodigy
-    :ensure t
-    :config
-    (load-if-exists "~/Dropbox/shared/prodigy-services.el")
-)
-
-(use-package treemacs
-    :ensure t
-    :defer t
-    :config
-    (progn
-
-      (setq treemacs-follow-after-init          t
-            treemacs-width                      35
-            treemacs-indentation                2
-            treemacs-git-integration            t
-            treemacs-collapse-dirs              3
-            treemacs-silent-refresh             nil
-            treemacs-change-root-without-asking nil
-            treemacs-sorting                    'alphabetic-desc
-            treemacs-show-hidden-files          t
-            treemacs-never-persist              nil
-            treemacs-is-never-other-window      nil
-            treemacs-goto-tag-strategy          'refetch-index)
-
-      (treemacs-follow-mode t)
-      (treemacs-filewatch-mode t))
-    :bind
-    (:map global-map
-          ([f8]        . treemacs-toggle)
-          ([f9]        . treemacs-projectile-toggle)
-          ("<C-M-tab>" . treemacs-toggle)
-          ("M-0"       . treemacs-select-window)
-          ("C-c 1"     . treemacs-delete-other-windows)
-        ))
-  (use-package treemacs-projectile
-    :defer t
-    :ensure t
-    :config
-    (setq treemacs-header-function #'treemacs-projectile-create-header)
-)
-
 (defun z/nikola-deploy () ""
 (interactive)
 (venv-with-virtualenv "blog" (shell-command "cd ~/gh/cestlaz.github.io; nikola github_deploy"))
@@ -760,49 +632,6 @@ directory to make multiple eshell windows easier."
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
 
 )
-
-;; unset C- and M- digit keys
-;(dotimes (n 10)
-;  (global-unset-key (kbd (format "C-%d" n)))
-;  (global-unset-key (kbd (format "M-%d" n)))
-;  )
-
-
-(defun org-agenda-show-agenda-and-todo (&optional arg)
-  (interactive "P")
-  (org-agenda arg "c")
-  (org-agenda-fortnight-view))
-
-
-;; set up my own map
-(define-prefix-command 'z-map)
-(global-set-key (kbd "C-z") 'z-map) ;; was C-1
-(define-key z-map (kbd "c") 'multiple-cursors-hydra/body)
-(define-key z-map (kbd "m") 'mu4e)
-(define-key z-map (kbd "1") 'org-global-cycle)
-(define-key z-map (kbd "a") 'org-agenda-show-agenda-and-todo)
-(define-key z-map (kbd "g") 'counsel-ag)
-
-(define-key z-map (kbd "s") 'flyspell-correct-word-before-point)
-(define-key z-map (kbd "i") (lambda () (interactive) (find-file "~/Dropbox/orgfiles/i.org")))
-(define-key z-map (kbd "f") 'origami-toggle-node)
-(define-key z-map (kbd "w") 'z/swap-windows)
-
-  ;;--------------------------------------------------------------------------
-
-
-  (global-set-key (kbd "\e\ei")
-                  (lambda () (interactive) (find-file "~/Dropbox/orgfiles/i.org")))
-
-  (global-set-key (kbd "\e\el")
-                  (lambda () (interactive) (find-file "~/Dropbox/orgfiles/links.org")))
-
-  (global-set-key (kbd "\e\ec")
-                  (lambda () (interactive) (find-file "~/.emacs.d/myinit.org")))
-
-(global-set-key (kbd "<end>") 'move-end-of-line)
-
-(global-set-key [mouse-3] 'flyspell-correct-word-before-point)
 
 (use-package shell-pop
 :ensure t
@@ -829,11 +658,6 @@ directory to make multiple eshell windows easier."
 :config 
 (pcre-mode)
 )
-
-(use-package simple-mpc
-:ensure t)
-(use-package mingus
-:ensure t)
 
 (use-package atomic-chrome
 :ensure t

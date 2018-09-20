@@ -198,6 +198,11 @@
 
   #+RESULTS:
 
+* coq
+#+BEGIN_SRC emacs-lisp
+(setq proof-splash-enable nil)
+(custom-set-variables '(coq-prog-name "/usr/local/bin/coqtop") '(proof-three-window-enable t))
+#+END_SRC
 * Autocomplete
   #+BEGIN_SRC emacs-lisp  :tangle no
      (use-package auto-complete 
