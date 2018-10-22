@@ -10,3 +10,5 @@ cd emacs-25.2
 sudo ./autogen.sh
 sudo ./configure –without-makeinfo –with-x-toolkit=no –with-xpm=no –with-jpeg=no –with-png=no –with-gif=no –with-tiff=no
 sudo make install
+# install emacs 25 on utbuntu
+# src http://sourcedigit.com/21272-ubuntu-install-latest-emacs-install-emacs-25-ubuntu-command-line/
