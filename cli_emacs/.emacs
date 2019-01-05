@@ -18,6 +18,7 @@
 (global-set-key (kbd "C-x m") 'imenu) ;; bind to imenu instead of mail
 ;;(global-set-key (kbd "C-x r") 'gdb-restore-windows)
 (electric-pair-mode 1) ;; ensure parenthesis and braces are paired
+(show-paren-mode 1) ;; highlight matching parenthesis
 (setq transient-mark-mode nil) ;; disable transient-mark-mode
 
 ;;(global-set-key (kbd "C-q") (kbd "C-g"));; quit with C-q
