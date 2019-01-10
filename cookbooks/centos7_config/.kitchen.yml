@@ -12,6 +12,8 @@ provisioner:
 verifier:
   name: inspec
 
+
+
 platforms:
   - name: centos-7
 
