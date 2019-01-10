@@ -3,8 +3,9 @@
 # Recipe:: default
 #
 # Copyright:: 2019, The Authors, All Rights Reserved.
-
-user 'vagrant'
+usr = 'vagrant'
+user "#{usr}"
+home = node['etc']['passwd'][usr]['dir']
 
 # repo config
 package 'epel-release'
@@ -21,6 +22,30 @@ cookbook_file '/tmp/emacs-25.2.rpm' do
 end
 
 yum_package '/tmp/emacs-25.2.rpm'
+cookbook_file "#{home}/.emacs" do
+  source '.emacs'
+  owner "#{usr}"
+  action :create
+end
+
+remote_directory  "#{home}/.emacs.d" do
+  source '.emacs.d'
+  owner "#{usr}"
+  action :create
+end
+
+
 
 package 'tmux2u'
+cookbook_file "#{home}/.tmux.conf" do
+  source '.tmux.conf'
+  owner "#{usr}"
+  action :create
+end
+
+
+
+
 package 'git2u'
+
+package 'the_silver_searcher'
