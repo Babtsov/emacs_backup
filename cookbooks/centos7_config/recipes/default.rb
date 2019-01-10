@@ -3,6 +3,7 @@
 # Recipe:: default
 #
 # Copyright:: 2019, The Authors, All Rights Reserved.
+
 usr = 'vagrant'
 user "#{usr}"
 home = node['etc']['passwd'][usr]['dir']
@@ -15,13 +16,14 @@ execute 'install_ius' do
 end
 
 # emacs config
-cookbook_file '/tmp/emacs-25.2.rpm' do
+cache_dir = "#{Chef::Config[:file_cache_path]}"
+cookbook_file "#{cache_dir}/emacs-25.2.rpm" do
   source 'emacs-25.2-1.el7.x86_64.rpm'
   mode '0755'
   action :create
 end
 
-yum_package '/tmp/emacs-25.2.rpm'
+yum_package "#{cache_dir}/emacs-25.2.rpm"
 cookbook_file "#{home}/.emacs" do
   source '.emacs'
   owner "#{usr}"
@@ -34,16 +36,13 @@ remote_directory  "#{home}/.emacs.d" do
   action :create
 end
 
-
-
+# tmux config
 package 'tmux2u'
 cookbook_file "#{home}/.tmux.conf" do
   source '.tmux.conf'
   owner "#{usr}"
   action :create
 end
-
-
 
 
 package 'git2u'
