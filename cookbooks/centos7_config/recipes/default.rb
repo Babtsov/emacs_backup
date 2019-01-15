@@ -36,6 +36,11 @@ remote_directory  "#{home}/.emacs.d" do
   action :create
 end
 
+link '/bin/emacs' do
+  to '/usr/local/bin/emacs'
+end
+
+
 # tmux config
 package 'tmux2u'
 cookbook_file "#{home}/.tmux.conf" do

@@ -5,7 +5,7 @@
 # The Inspec reference, with examples and extensive documentation, can be
 # found at http://inspec.io/docs/reference/resources/
 
-describe bash('PATH=PATH:/usr/local/bin emacs --version | grep \'Emacs 25\'') do
+describe bash('emacs --version | grep \'Emacs 25\'') do
   its('exit_status') { should eq 0 }
 end
 
