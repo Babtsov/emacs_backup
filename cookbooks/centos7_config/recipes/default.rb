@@ -49,6 +49,18 @@ cookbook_file "#{home}/.tmux.conf" do
   action :create
 end
 
+# configure python
+package 'python36u'
+link '/usr/bin/python3' do
+  to '/usr/bin/python3.6'
+end
+
+package 'python36u-pip'
+link '/usr/bin/pip3' do
+  to '/usr/bin/pip3.6'
+end
+
+
 
 package 'git2u'
 

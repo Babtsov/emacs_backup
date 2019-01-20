@@ -16,3 +16,11 @@ end
 describe bash('ag --version') do
   its('exit_status') { should eq 0 }
 end
+
+describe bash('python3 --version | grep 3.6') do
+  its('exit_status') { should eq 0 }
+end
+
+describe bash('pip3 --version') do
+  its('exit_status') { should eq 0 }
+end
