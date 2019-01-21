@@ -8,6 +8,13 @@ usr = 'vagrant'
 user "#{usr}"
 home = node['etc']['passwd'][usr]['dir']
 
+# sudo config
+sudo "config" do
+  users [usr]
+  defaults ['!always_set_home', '!set_home']
+  env_keep_add ["HOME"]
+end
+
 # repo config
 package 'epel-release'
 execute 'install_ius' do
