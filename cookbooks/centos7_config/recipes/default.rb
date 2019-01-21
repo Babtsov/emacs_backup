@@ -15,6 +15,8 @@ sudo "config" do
   env_keep_add ["HOME"]
 end
 
+package 'bash-completion' # autocomplete with sudo
+
 # repo config
 package 'epel-release'
 execute 'install_ius' do
